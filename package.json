@@ -1,0 +1,35 @@
+{
+  "name": "mywebsite",
+  "version": "1.0.0",
+  "description": "A minimalist bilingual personal blog with admin panel, compatible with local Node.js and Cloudflare Pages.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "seed": "node server/seed.js",
+    "deploy:cloudflare": "wrangler pages deploy public --project-name=Mywebsitekm",
+    "setup:iis": "powershell -ExecutionPolicy Bypass -File setup-iis-site.ps1",
+    "enable:arr": "powershell -ExecutionPolicy Bypass -File enable-arr.ps1",
+    "setup:autostart": "powershell -ExecutionPolicy Bypass -File setup-autostart.ps1"
+  },
+  "keywords": [
+    "blog",
+    "personal-website",
+    "cloudflare-pages",
+    "bilingual"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.123.0"
+  }
+}

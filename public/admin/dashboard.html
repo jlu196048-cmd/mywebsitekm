@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <div class="dash-header">
+      <h1 id="dash-title">Admin Dashboard</h1>
+      <div class="toolbar">
+        <a href="/" class="btn" target="_blank" rel="noopener">View Site</a>
+        <button id="btn-logout" class="btn danger">Logout</button>
+      </div>
+    </div>
+
+    <div class="dash-tabs">
+      <button data-tab="posts" class="active">Posts</button>
+      <button data-tab="new-post">New Post</button>
+      <button data-tab="images">Images</button>
+      <button data-tab="messages">Messages <span id="msg-badge" class="msg-badge" hidden></span></button>
+      <button data-tab="profile">Profile</button>
+      <button data-tab="account">Account</button>
+    </div>
+
+    <!-- Posts tab -->
+    <section class="tab-panel active" data-panel="posts">
+      <div class="card">
+        <h2>All Posts</h2>
+        <table class="table" id="posts-table">
+          <thead>
+            <tr>
+              <th>Title</th><th>Date</th><th>Category</th><th>Status</th><th style="width:240px">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- New / Edit post tab -->
+    <section class="tab-panel" data-panel="new-post">
+      <div class="card">
+        <h2 id="editor-title">New Post</h2>
+        <input type="hidden" id="post-id">
+        <form class="editor-form" id="post-form">
+          <div class="row-2">
+            <div>
+              <div class="lang-tabs" data-target="title">
+                <button type="button" class="active" data-lang="zh">中文</button>
+                <button type="button" data-lang="en">English</button>
+              </div>
+              <input type="text" id="post-title" placeholder="Title" required>
+            </div>
+            <div>
+              <label>Slug / Date</label>
+              <div class="row-2" style="grid-template-columns:1fr 1fr;">
+                <input type="text" id="post-slug" placeholder="optional slug">
+                <input type="date" id="post-date">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Cover Image URL</label>
+            <input type="text" id="post-cover" placeholder="/images/cover.jpg (or pick from Images tab)">
+          </div>
+
+          <div class="row-2">
+            <div class="form-row">
+              <label>Category</label>
+              <input type="text" id="post-category" placeholder="e.g. Technology">
+            </div>
+            <div class="form-row">
+              <label>Tags (comma separated)</label>
+              <input type="text" id="post-tags" placeholder="e.g. javascript, life">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="lang-tabs" data-target="summary">
+              <button type="button" class="active" data-lang="zh">中文</button>
+              <button type="button" data-lang="en">English</button>
+            </div>
+            <textarea id="post-summary" rows="3" placeholder="Summary (~200 chars)"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="lang-tabs" data-target="body">
+              <button type="button" class="active" data-lang="zh">中文</button>
+              <button type="button" data-lang="en">English</button>
+            </div>
+            <textarea id="post-body" class="tall" placeholder="Markdown body"></textarea>
+          </div>
+
+          <div class="form-row">
+            <label>Status</label>
+            <select id="post-status">
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn primary">Save</button>
+            <button type="button" class="btn" id="btn-cancel-edit">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Images tab -->
+    <section class="tab-panel" data-panel="images">
+      <div class="card">
+        <h2>Upload Image</h2>
+        <label class="upload-box" id="upload-box">
+          <p>Drag an image here, or click to select</p>
+          <p class="form-tip">Allowed: JPG, PNG, GIF, WebP, SVG · max 8 MB</p>
+          <input type="file" id="upload-input" accept="image/*">
+        </label>
+      </div>
+      <div class="card">
+        <h2>Image Library</h2>
+        <div class="image-grid" id="image-grid"></div>
+      </div>
+    </section>
+
+    <!-- Profile tab -->
+    <section class="tab-panel" data-panel="profile">
+      <div class="card">
+        <h2>Personal Profile</h2>
+        <form class="editor-form" id="profile-form">
+          <div class="row-2">
+            <div class="form-row">
+              <label>Display Name</label>
+              <input type="text" id="prof-name">
+            </div>
+            <div class="form-row">
+              <label>Avatar URL</label>
+              <input type="text" id="prof-avatar" placeholder="/images/avatar.jpg">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="lang-tabs" data-target="intro">
+              <button type="button" class="active" data-lang="zh">中文</button>
+              <button type="button" data-lang="en">English</button>
+            </div>
+            <textarea id="prof-intro" rows="3" placeholder="Homepage intro (1-3 sentences)"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="lang-tabs" data-target="about">
+              <button type="button" class="active" data-lang="zh">中文</button>
+              <button type="button" data-lang="en">English</button>
+            </div>
+            <textarea id="prof-about" rows="8" placeholder="About page (Markdown)"></textarea>
+          </div>
+
+          <div class="form-row">
+            <label>Contacts (label + URL, one per line, e.g. <code>Email: mailto:you@example.com</code>)</label>
+            <textarea id="prof-contacts" rows="4" placeholder="Email: mailto:you@example.com&#10;Twitter: https://x.com/you"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn primary">Save Profile</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Messages tab -->
+    <section class="tab-panel" data-panel="messages">
+      <div class="msg-layout">
+        <aside class="msg-list-pane card">
+          <div class="msg-list-toolbar">
+            <label for="msg-filter" style="font-size:0.85em;color:var(--muted)">Filter:</label>
+            <select id="msg-filter">
+              <option value="all">All</option>
+              <option value="unread">Unread</option>
+              <option value="read">Read</option>
+            </select>
+          </div>
+          <ul id="msg-list" class="msg-list"></ul>
+        </aside>
+        <main class="msg-detail-pane card" id="msg-detail">
+          <p class="form-msg">Select a message to view it.</p>
+        </main>
+      </div>
+    </section>
+
+    <!-- Account tab -->
+    <section class="tab-panel" data-panel="account">
+      <div class="card">
+        <h2>Change Password</h2>
+        <form class="editor-form" id="password-form">
+          <div class="form-row">
+            <label>Current Password</label>
+            <input type="password" id="pw-current" required>
+          </div>
+          <div class="form-row">
+            <label>New Password (min 6 chars)</label>
+            <input type="password" id="pw-new" required minlength="6">
+          </div>
+          <div class="form-row">
+            <label>Confirm New Password</label>
+            <input type="password" id="pw-confirm" required minlength="6">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn primary">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal">
+      <h3 id="modal-title">Confirm</h3>
+      <p id="modal-body"></p>
+      <div class="modal-footer">
+        <button class="btn" id="modal-cancel">Cancel</button>
+        <button class="btn danger" id="modal-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    // --- Auth guard ---
+    async function requireAuth() {
+      const t = localStorage.getItem('admin_token');
+      if (!t) { location.replace('/admin/'); return; }
+      try { await window.API.adminStatus(); }
+      catch (e) {
+        localStorage.removeItem('admin_token');
+        location.replace('/admin/');
+      }
+    }
+    requireAuth();
+
+    // --- Tabs ---
+    document.querySelectorAll('.dash-tabs button').forEach(function(b) {
+      b.addEventListener('click', function() {
+        const tab = b.dataset.tab;
+        document.querySelectorAll('.dash-tabs button').forEach(function(x){ x.classList.toggle('active', x===b); });
+        document.querySelectorAll('.tab-panel').forEach(function(p){
+          p.classList.toggle('active', p.dataset.panel === tab);
+        });
+        if (tab === 'posts') loadPosts();
+        if (tab === 'images') loadImages();
+        if (tab === 'profile') loadProfile();
+        if (tab === 'messages') loadMessages();
+        if (tab === 'new-post' && !document.getElementById('post-id').value) resetEditor();
+      });
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', async function() {
+      await window.API.adminLogout().catch(function(){});
+      localStorage.removeItem('admin_token');
+      location.href = '/admin/';
+    });
+
+    // --- Modal helper ---
+    function confirmDialog(title, body) {
+      return new Promise(function(resolve) {
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-body').textContent = body;
+        const back = document.getElementById('modal-backdrop');
+        back.classList.add('show');
+        function cleanup(v) {
+          back.classList.remove('show');
+          document.getElementById('modal-ok').onclick = null;
+          document.getElementById('modal-cancel').onclick = null;
+          resolve(v);
+        }
+        document.getElementById('modal-ok').onclick = function() { cleanup(true); };
+        document.getElementById('modal-cancel').onclick = function() { cleanup(false); };
+      });
+    }
+
+    // --- Posts list ---
+    async function loadPosts() {
+      try {
+        const data = await window.API.adminListPosts ? null : null;
+        // We'll just call getPosts with everything (admin sees all)
+        const all = await window.API.getPosts({ status: 'all', sort: 'desc', limit: 200 });
+        const tbody = document.querySelector('#posts-table tbody');
+        tbody.innerHTML = '';
+        (all.items || []).forEach(function(p) {
+          const tr = document.createElement('tr');
+          if (p.status === 'hidden' || p.status === 'draft') tr.classList.add('dim');
+          const title = (p.title && (p.title.zh || p.title.en)) || '(untitled)';
+          const statusBadge = p.status === 'published'
+            ? '<span class="tag-pill" style="background:#d8f5e3;color:#1f7a3e">Published</span>'
+            : p.status === 'hidden'
+              ? '<span class="tag-pill" style="background:#fde2e1;color:#a94442">Hidden</span>'
+              : '<span class="tag-pill">Draft</span>';
+          tr.innerHTML = `
+            <td><a href="/post.html?id=${p.id}" target="_blank">${window.escapeHTML(title)}</a></td>
+            <td>${window.formatDate(p.date)}</td>
+            <td>${window.escapeHTML(p.category || '')}</td>
+            <td>${statusBadge}</td>
+            <td class="actions">
+              <button class="btn" data-act="edit" data-id="${p.id}">Edit</button>
+              <button class="btn" data-act="toggle" data-id="${p.id}" data-status="${p.status}">${p.status==='hidden'?'Show':'Hide'}</button>
+              <button class="btn danger" data-act="delete" data-id="${p.id}">Delete</button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (e) { window.toast('Failed to load posts: ' + e.message, 'error'); }
+    }
+
+    document.querySelector('#posts-table tbody').addEventListener('click', async function(e) {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const act = btn.dataset.act;
+      if (act === 'edit') { await loadIntoEditor(id); switchTab('new-post'); }
+      else if (act === 'toggle') {
+        try { await window.API.adminTogglePost(id); window.toast('Status updated'); loadPosts(); }
+        catch (e) { window.toast(e.message, 'error'); }
+      }
+      else if (act === 'delete') {
+        const yes = await confirmDialog('Delete post?', 'This cannot be undone.');
+        if (!yes) return;
+        try { await window.API.adminDeletePost(id); window.toast('Deleted'); loadPosts(); }
+        catch (e) { window.toast(e.message, 'error'); }
+      }
+    });
+
+    function switchTab(name) {
+      document.querySelectorAll('.dash-tabs button').forEach(function(b){
+        b.classList.toggle('active', b.dataset.tab === name);
+      });
+      document.querySelectorAll('.tab-panel').forEach(function(p){
+        p.classList.toggle('active', p.dataset.panel === name);
+      });
+    }
+
+    // --- Editor ---
+    function resetEditor() {
+      document.getElementById('editor-title').textContent = 'New Post';
+      document.getElementById('post-id').value = '';
+      ['post-title','post-slug','post-cover','post-category','post-tags','post-summary','post-body'].forEach(function(id){
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('post-date').value = new Date().toISOString().slice(0,10);
+      document.getElementById('post-status').value = 'published';
+      // reset lang tabs to zh
+      document.querySelectorAll('.lang-tabs').forEach(function(group){
+        group.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.dataset.lang==='zh'); });
+        const target = group.dataset.target;
+        const map = { title: 'post-title', summary: 'post-summary', body: 'post-body', intro: 'prof-intro', about: 'prof-about' };
+        const mapAlt = { title: 'post-title-en', summary: 'post-summary-en', body: 'post-body-en' };
+        if (map[target]) {
+          const alt = map[target] + '-en';
+          document.getElementById(alt) && (document.getElementById(alt).style.display = 'none');
+        }
+      });
+    }
+    document.getElementById('btn-cancel-edit').addEventListener('click', function() {
+      resetEditor();
+      switchTab('posts');
+    });
+
+    // Per-editor lang tab switching (store both languages side by side)
+    function ensureAltInputs() {
+      // For post editor we store both langs in hidden fields when switching.
+      // But a simpler approach: we maintain ONE active language at a time and store per-lang values in JS.
+      window.__editorLang = window.__editorLang || {};
+    }
+    ensureAltInputs();
+
+    document.querySelectorAll('.lang-tabs').forEach(function(group){
+      group.querySelectorAll('button').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          group.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b===btn); });
+          const target = group.dataset.target;
+          const lang = btn.dataset.lang;
+          // save current value into stash
+          const stash = window.__editorLang[target] = window.__editorLang[target] || {};
+          const map = { title: 'post-title', summary: 'post-summary', body: 'post-body', intro: 'prof-intro', about: 'prof-about' };
+          if (map[target]) {
+            stash[getOtherLang(lang)] = document.getElementById(map[target]).value;
+            document.getElementById(map[target]).value = stash[lang] || '';
+            document.getElementById(map[target]).placeholder = (lang==='zh' ? '请输入中文' : 'Type in English');
+          }
+        });
+      });
+    });
+    function getOtherLang(l) { return l === 'zh' ? 'en' : 'zh'; }
+
+    async function loadIntoEditor(id) {
+      try {
+        const p = await window.API.getPost(id);
+        document.getElementById('editor-title').textContent = 'Edit Post';
+        document.getElementById('post-id').value = p.id;
+        document.getElementById('post-slug').value = p.slug || '';
+        document.getElementById('post-cover').value = p.cover || '';
+        document.getElementById('post-category').value = p.category || '';
+        document.getElementById('post-tags').value = (p.tags || []).join(', ');
+        document.getElementById('post-date').value = window.formatDate(p.date);
+        document.getElementById('post-status').value = p.status || 'published';
+        document.getElementById('post-title').value = (p.title && p.title.zh) || '';
+        document.getElementById('post-summary').value = (p.summary && p.summary.zh) || '';
+        document.getElementById('post-body').value = (p.body && p.body.zh) || '';
+        window.__editorLang.title = { en: (p.title && p.title.en) || '' };
+        window.__editorLang.summary = { en: (p.summary && p.summary.en) || '' };
+        window.__editorLang.body = { en: (p.body && p.body.en) || '' };
+      } catch (e) { window.toast(e.message, 'error'); }
+    }
+
+    document.getElementById('post-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      // Make sure both lang values are captured
+      const titleZh = document.getElementById('post-title').value;
+      const titleEn = (window.__editorLang.title && window.__editorLang.title.en) || '';
+      const summaryZh = document.getElementById('post-summary').value;
+      const summaryEn = (window.__editorLang.summary && window.__editorLang.summary.en) || '';
+      const bodyZh = document.getElementById('post-body').value;
+      const bodyEn = (window.__editorLang.body && window.__editorLang.body.en) || '';
+
+      // If currently EN tab is active, the visible value is the EN value.
+      // Detect which lang tab is active for each field to swap correctly.
+      ['title','summary','body'].forEach(function(target){
+        const group = document.querySelector('.lang-tabs[data-target="' + target + '"]');
+        const active = group.querySelector('button.active').dataset.lang;
+        const map = { title: 'post-title', summary: 'post-summary', body: 'post-body' };
+        const stash = window.__editorLang[target] = window.__editorLang[target] || {};
+        stash[active] = document.getElementById(map[target]).value;
+      });
+
+      const payload = {
+        slug: document.getElementById('post-slug').value || undefined,
+        cover: document.getElementById('post-cover').value || '',
+        date: document.getElementById('post-date').value || new Date().toISOString().slice(0,10),
+        category: document.getElementById('post-category').value || '',
+        tags: document.getElementById('post-tags').value.split(',').map(function(s){return s.trim();}).filter(Boolean),
+        status: document.getElementById('post-status').value,
+        title: {
+          zh: window.__editorLang.title.zh || titleZh,
+          en: window.__editorLang.title.en || titleEn,
+        },
+        summary: {
+          zh: window.__editorLang.summary.zh || summaryZh,
+          en: window.__editorLang.summary.en || summaryEn,
+        },
+        body: {
+          zh: window.__editorLang.body.zh || bodyZh,
+          en: window.__editorLang.body.en || bodyEn,
+        },
+      };
+      const id = document.getElementById('post-id').value;
+      try {
+        if (id) await window.API.adminUpdatePost(id, payload);
+        else await window.API.adminCreatePost(payload);
+        window.toast('Saved');
+        resetEditor();
+        document.getElementById('post-date').value = new Date().toISOString().slice(0,10);
+        switchTab('posts');
+      } catch (err) { window.toast(err.message, 'error'); }
+    });
+
+    // --- Images ---
+    async function loadImages() {
+      try {
+        const data = await window.API.getImages();
+        const grid = document.getElementById('image-grid');
+        grid.innerHTML = '';
+        (data.items || []).forEach(function(img) {
+          const card = document.createElement('div');
+          card.className = 'image-card';
+          card.innerHTML = `
+            <img src="${img.url}" alt="">
+            <div class="img-name">${window.escapeHTML(img.name)}</div>
+            <div class="img-actions">
+              <button class="btn" data-act="copy" data-url="${img.url}">Copy URL</button>
+              <button class="btn danger" data-act="del" data-name="${img.name}">Delete</button>
+            </div>`;
+          grid.appendChild(card);
+        });
+      } catch (e) { window.toast(e.message, 'error'); }
+    }
+    document.getElementById('image-grid').addEventListener('click', async function(e) {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      if (btn.dataset.act === 'copy') {
+        try { await navigator.clipboard.writeText(btn.dataset.url); window.toast('URL copied'); }
+        catch(e) { window.prompt('Copy URL:', btn.dataset.url); }
+      } else if (btn.dataset.act === 'del') {
+        const yes = await confirmDialog('Delete image?', btn.dataset.name);
+        if (!yes) return;
+        try { await window.API.adminDeleteImage(btn.dataset.name); window.toast('Deleted'); loadImages(); }
+        catch (e) { window.toast(e.message, 'error'); }
+      }
+    });
+    const uploadInput = document.getElementById('upload-input');
+    const uploadBox = document.getElementById('upload-box');
+    uploadBox.addEventListener('click', function(e) { if (e.target.tagName !== 'INPUT') uploadInput.click(); });
+    uploadBox.addEventListener('dragover', function(e){ e.preventDefault(); uploadBox.classList.add('drag'); });
+    uploadBox.addEventListener('dragleave', function(){ uploadBox.classList.remove('drag'); });
+    uploadBox.addEventListener('drop', function(e){
+      e.preventDefault(); uploadBox.classList.remove('drag');
+      if (e.dataTransfer.files.length) doUpload(e.dataTransfer.files[0]);
+    });
+    uploadInput.addEventListener('change', function() {
+      if (uploadInput.files.length) doUpload(uploadInput.files[0]);
+    });
+    async function doUpload(file) {
+      const fd = new FormData();
+      fd.append('file', file);
+      try {
+        await window.API.adminUploadImage(fd);
+        window.toast('Uploaded');
+        uploadInput.value = '';
+        loadImages();
+      } catch (e) { window.toast(e.message, 'error'); }
+    }
+
+    // --- Profile ---
+    async function loadProfile() {
+      try {
+        const p = await window.API.getProfile();
+        document.getElementById('prof-name').value = p.name || '';
+        document.getElementById('prof-avatar').value = p.avatar || '';
+        document.getElementById('prof-intro').value = (p.intro && p.intro.zh) || '';
+        document.getElementById('prof-about').value = (p.about && p.about.zh) || '';
+        window.__editorLang.intro = { en: (p.intro && p.intro.en) || '' };
+        window.__editorLang.about = { en: (p.about && p.about.en) || '' };
+        document.getElementById('prof-contacts').value = (p.contacts || [])
+          .map(function(c) { return c.label + ': ' + c.url; }).join('\n');
+      } catch (e) { window.toast(e.message, 'error'); }
+    }
+    document.getElementById('profile-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      // Stash current values into EN/ZH
+      ['intro','about'].forEach(function(target){
+        const group = document.querySelector('.lang-tabs[data-target="' + target + '"]');
+        const active = group.querySelector('button.active').dataset.lang;
+        const map = { intro: 'prof-intro', about: 'prof-about' };
+        window.__editorLang[target] = window.__editorLang[target] || {};
+        window.__editorLang[target][active] = document.getElementById(map[target]).value;
+      });
+      const contactsRaw = document.getElementById('prof-contacts').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+      const contacts = contactsRaw.map(function(line){
+        const idx = line.indexOf(':');
+        if (idx < 0) return { label: line, url: line };
+        return { label: line.slice(0, idx).trim(), url: line.slice(idx+1).trim() };
+      });
+      const payload = {
+        name: document.getElementById('prof-name').value,
+        avatar: document.getElementById('prof-avatar').value,
+        intro: {
+          zh: (window.__editorLang.intro && window.__editorLang.intro.zh) || '',
+          en: (window.__editorLang.intro && window.__editorLang.intro.en) || '',
+        },
+        about: {
+          zh: (window.__editorLang.about && window.__editorLang.about.zh) || '',
+          en: (window.__editorLang.about && window.__editorLang.about.en) || '',
+        },
+        contacts: contacts,
+      };
+      try {
+        await window.API.adminUpdateProfile(payload);
+        window.toast('Profile saved');
+      } catch (e) { window.toast(e.message, 'error'); }
+    });
+
+    // --- Change password ---
+    document.getElementById('password-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const cur = document.getElementById('pw-current').value;
+      const nw = document.getElementById('pw-new').value;
+      const cf = document.getElementById('pw-confirm').value;
+      if (nw !== cf) { window.toast('Passwords do not match', 'error'); return; }
+      try {
+        await window.API.adminChangePwd({ currentPassword: cur, newPassword: nw });
+        window.toast('Password updated');
+        document.getElementById('password-form').reset();
+      } catch (e) { window.toast(e.message, 'error'); }
+    });
+
+    // --- Messages ---
+    let __currentMessageId = null;
+    let __messagesCache = [];
+
+    async function loadMessages() {
+      try {
+        const filter = document.getElementById('msg-filter').value;
+        const data = await window.API.adminListMessages({ status: filter });
+        __messagesCache = data.items || [];
+        renderMessageList();
+        updateMessageBadge(data.unread || 0);
+      } catch (e) { window.toast(e.message, 'error'); }
+    }
+
+    function updateMessageBadge(n) {
+      const badge = document.getElementById('msg-badge');
+      if (!badge) return;
+      if (n > 0) {
+        badge.textContent = n > 99 ? '99+' : String(n);
+        badge.hidden = false;
+      } else {
+        badge.hidden = true;
+      }
+    }
+
+    function renderMessageList() {
+      const list = document.getElementById('msg-list');
+      list.innerHTML = '';
+      if (__messagesCache.length === 0) {
+        list.innerHTML = '<li class="msg-empty">No messages.</li>';
+        return;
+      }
+      __messagesCache.forEach(function(m) {
+        const li = document.createElement('li');
+        li.className = 'msg-item';
+        if (!m.read) li.classList.add('unread');
+        if (m.id === __currentMessageId) li.classList.add('selected');
+        if (m.deleted) li.classList.add('deleted');
+        const safeName = window.escapeHTML(m.name || '(no name)');
+        const preview = window.escapeHTML((m.message || '').slice(0, 80));
+        const date = window.formatDate(m.receivedAt);
+        li.innerHTML = `
+          <div class="msg-row-1">
+            <span class="msg-name">${safeName}</span>
+            <span class="msg-date">${date}</span>
+          </div>
+          <div class="msg-row-2">
+            <span class="msg-preview">${preview}${(m.message||'').length>80?'…':''}</span>
+          </div>
+          ${m.replies && m.replies.length ? '<div class="msg-replied-badge">replied</div>' : ''}
+        `;
+        li.addEventListener('click', function() { selectMessage(m.id); });
+        list.appendChild(li);
+      });
+    }
+
+    async function selectMessage(id) {
+      __currentMessageId = id;
+      renderMessageList(); // re-render to update .selected
+      try {
+        const m = await window.API.adminGetMessage(id);
+        renderMessageDetail(m);
+        // auto-mark as read on view (only if currently unread)
+        if (!m.read) {
+          try {
+            await window.API.adminMarkRead(id);
+            m.read = true;
+            renderMessageList();
+            // refresh unread badge in background
+            window.API.adminListMessages({ status: 'all' }).then(function(d){
+              updateMessageBadge(d.unread || 0);
+            }).catch(function(){});
+          } catch (e) { /* non-fatal */ }
+        }
+      } catch (e) { window.toast(e.message, 'error'); }
+    }
+
+    function renderMessageDetail(m) {
+      const wrap = document.getElementById('msg-detail');
+      const safeName = window.escapeHTML(m.name || '(no name)');
+      const safeEmail = window.escapeHTML(m.email || '');
+      const safeMsg = window.escapeHTML(m.message || '');
+      const date = window.formatDate(m.receivedAt);
+      const replies = m.replies || [];
+
+      const repliesHtml = replies.length
+        ? replies.map(function(r) {
+            const rdate = window.formatDate(r.repliedAt);
+            const rbody = window.escapeHTML(r.body);
+            const rby = window.escapeHTML(r.repliedBy || 'admin');
+            return `
+              <div class="msg-reply">
+                <div class="msg-reply-meta"><strong>${rby}</strong> · ${rdate}</div>
+                <div class="msg-reply-body">${rbody}</div>
+              </div>`;
+          }).join('')
+        : '<p class="form-msg">No replies yet.</p>';
+
+      wrap.innerHTML = `
+        <div class="msg-detail-header">
+          <h2>${safeName}</h2>
+          <div class="msg-detail-meta">
+            <a href="mailto:${safeEmail}">${safeEmail}</a> · ${date}
+            ${m.ip ? ' · IP: ' + window.escapeHTML(m.ip) : ''}
+            ${m.deleted ? ' · <span class="msg-tag-deleted">deleted</span>' : ''}
+          </div>
+        </div>
+        <div class="msg-original">
+          <div class="msg-original-label">Original message</div>
+          <div class="msg-original-body">${safeMsg.replace(/\n/g, '<br>')}</div>
+        </div>
+        <div class="msg-replies">
+          <div class="msg-replies-label">Replies (${replies.length})</div>
+          ${repliesHtml}
+        </div>
+        ${m.deleted ? '' : `
+        <form class="msg-reply-form" id="msg-reply-form">
+          <label>Reply</label>
+          <textarea id="msg-reply-body" rows="4" placeholder="Type your reply…" required></textarea>
+          <div class="msg-reply-actions">
+            <button type="submit" class="btn-primary">Send Reply</button>
+            <span class="form-msg" id="msg-reply-status"></span>
+          </div>
+        </form>`}
+        <div class="msg-detail-actions">
+          <button class="btn" data-msg-act="toggle-read">${m.read ? 'Mark as Unread' : 'Mark as Read'}</button>
+          ${m.deleted
+            ? '<button class="btn" data-msg-act="restore">Restore</button>'
+            : '<button class="btn danger" data-msg-act="delete">Delete</button>'}
+        </div>
+      `;
+
+      // Wire reply form
+      const replyForm = document.getElementById('msg-reply-form');
+      if (replyForm) {
+        replyForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const body = document.getElementById('msg-reply-body').value;
+          const status = document.getElementById('msg-reply-status');
+          status.className = 'form-msg';
+          status.textContent = '';
+          try {
+            await window.API.adminReplyMessage(m.id, { body: body });
+            window.toast('Reply saved');
+            const updated = await window.API.adminGetMessage(m.id);
+            renderMessageDetail(updated);
+          } catch (e2) { window.toast(e2.message, 'error'); }
+        });
+      }
+
+      // Action buttons (toggle-read / delete / restore) are handled by
+      // a single document-level delegated listener defined below.
+    }
+
+    document.addEventListener('click', async function(e) {
+      const btn = e.target.closest('[data-msg-act]');
+      if (!btn) return;
+      if (!__currentMessageId) return;
+      const act = btn.dataset.msgAct;
+      if (act === 'toggle-read') {
+        try {
+          // determine current state from rendered button text
+          const wasRead = btn.textContent.indexOf('Unread') >= 0;
+          if (wasRead) {
+            await window.API.adminMarkUnread(__currentMessageId);
+            window.toast('Marked as unread');
+          } else {
+            await window.API.adminMarkRead(__currentMessageId);
+            window.toast('Marked as read');
+          }
+          const updated = await window.API.adminGetMessage(__currentMessageId);
+          renderMessageDetail(updated);
+          await loadMessages(); // refresh list + badge
+        } catch (err) { window.toast(err.message, 'error'); }
+      } else if (act === 'delete') {
+        const yes = await confirmDialog('Delete this message?', 'It will be hidden but can be restored later.');
+        if (!yes) return;
+        try {
+          await window.API.adminDeleteMessage(__currentMessageId);
+          window.toast('Deleted');
+          __currentMessageId = null;
+          document.getElementById('msg-detail').innerHTML = '<p class="form-msg">Select a message to view it.</p>';
+          await loadMessages();
+        } catch (err) { window.toast(err.message, 'error'); }
+      } else if (act === 'restore') {
+        try {
+          await window.API.adminRestoreMessage(__currentMessageId);
+          window.toast('Restored');
+          await loadMessages();
+          const updated = await window.API.adminGetMessage(__currentMessageId);
+          renderMessageDetail(updated);
+        } catch (err) { window.toast(err.message, 'error'); }
+      }
+    });
+
+    document.getElementById('msg-filter').addEventListener('change', loadMessages);
+
+    // initial load
+    loadPosts();
+    loadMessages();  // also fetch unread badge on entry
+  </script>
+</body>
+</html>

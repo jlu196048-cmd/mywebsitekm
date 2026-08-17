@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+.desktop.ini
+
+# Build / deploy artifacts
+mywebsite-upload.zip
+upload-this/
+
+# iisnode runtime state (local IIS only, not for Cloudflare)
+iisnode/
+
+# Local user data — keep seed data, ignore user data
+data/messages.json
+data/admin.json
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# ZCode / ZCode artifacts (this session's tooling)
+.opencode/
+.zcode/
+Todo/
+__pycache__/
+*.pyc
+
+# Cloudflare / Wrangler local state
+.wrangler/
+.dev.vars
+
+# Misc
+*.bak
+*.tmp
+
+# The .downloads cache used by previous tool calls
+.downloads/

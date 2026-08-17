@@ -1,0 +1,112 @@
+{
+  "items": [
+    {
+      "slug": "on-marginal-gains",
+      "category": "Growth Mindset",
+      "tags": [
+        "life",
+        "habits"
+      ],
+      "status": "published",
+      "date": "2026-08-17",
+      "cover": "/images/cover-marginal.svg",
+      "title": {
+        "zh": "日拱一卒：边际改善的力量",
+        "en": "Marginal Gains: The Quiet Power of 1%"
+      },
+      "summary": {
+        "zh": "与其追求一次性的彻底改变，不如每天进步 1%。一篇关于持续微改进的复盘。",
+        "en": "Forget sweeping life overhauls. Tiny 1% improvements, stacked over time, quietly change everything."
+      },
+      "body": {
+        "zh": "## 为什么 1% 更有用\n\n我们总想找到那个**\"改变一切\"的决定**——换一份工作、搬到一个新城市、戒掉一个坏习惯。\n但回看自己这几年真正发生的变化，几乎都不是来自某个惊天动地的瞬间，而是来自每天 1% 的悄悄推进。\n\n\n## 我试着做的小事\n\n- 每天写 200 字，哪怕只是流水账\n- 每周看完一本书的一个章节\n- 把\"今天我能多做的一件小事\"写在便签上\n- 睡前把手机放在客厅\n\n这些事情都不惊天动地，但 90 天后回头看，**复利效应会自己显现**。\n\n## 给自己的提醒\n\n不要被\"完美的一天\"绑架。每一天做对一件小事，长此以往，足以成为你想成为的那个人。\n",
+        "en": "## Why 1% works better\n\nWe keep hunting for the one decision that changes everything — a new job, a new city, kicking the one bad habit. But when I look back at what actually shifted in my life, almost none of it came from a dramatic moment. It came from a quiet 1% nudge, day after day.\n\n\n## The small things I tried\n\n- Write 200 words a day, even if it's just a brain-dump\n- Finish one chapter of a book per week\n- Write down \"one tiny thing I can do more today\" on a sticky note\n- Leave my phone in the living room before bed\n\nNone of these are heroic. But ninety days later, the **compounding effect shows up on its own**.\n\n## A reminder to myself\n\nDon't be held hostage to \"a perfect day.\" Do one small thing right, every day, and that alone is enough to slowly become the person you're trying to be."
+      },
+      "id": "db5fe408d47c",
+      "createdAt": "2026-08-12T17:10:14.737Z",
+      "updatedAt": "2026-08-17T10:01:01.522Z",
+      "author": "admin"
+    },
+    {
+      "slug": "building-mywebsite",
+      "category": "Technology",
+      "tags": [
+        "nodejs",
+        "cloudflare"
+      ],
+      "status": "hidden",
+      "date": "2026-04-02",
+      "cover": "/images/cover-build.svg",
+      "title": {
+        "zh": "我用 Node.js + JSON 搭了一个双语小博客",
+        "en": "I built a tiny bilingual blog with Node.js and JSON"
+      },
+      "summary": {
+        "zh": "从 0 到 1 做一个支持中英双语、可在本地和 Cloudflare 上跑的极简博客。",
+        "en": "A from-scratch minimalist blog that runs locally and ships to Cloudflare Pages."
+      },
+      "body": {
+        "zh": "## 目标很简单\n\n想做一个**真的能用**的小站，不需要数据库，不需要复杂的构建链：\n- 本地能跑（`node server/index.js`）\n- 一键推到 Cloudflare Pages\n- 自带后台，能写文章、上传图片、切换隐藏/显示\n\n## 架构选择\n\n- **Express** 处理本地 API\n- **JSON 文件**作为数据存储（`data/posts.json` 等）\n- **Cloudflare Functions**（`functions/api/*.js`）作为部署时的 API\n- **localStorage + JWT** 做后台登录\n- **多语言字段**嵌在每条记录里：`{ zh, en }`\n\n```js\n// Example post shape\n{\n  id: 'abcd1234',\n  status: 'published',\n  title:    { zh: '你好', en: 'Hello' },\n  summary:  { zh: '...',   en: '...' },\n  body:     { zh: '...',   en: '...' },\n  date: '2026-04-02'\n}\n```\n\n## 几个我用得很顺手的小工具\n\n- **`renderMarkdown`** —— 客户端轻量 Markdown 渲染（够用就好）\n- **`localStorage` + JWT** —— 不需要 cookie 也能跨页保持登录态\n- **`multer`** —— 处理图片上传，本地写盘、Cloudflare 上换 R2 即可\n\n完整代码放在仓库里，欢迎 star。\n",
+        "en": "## A simple goal\n\nI wanted a **useful** little site — no database, no fancy build step:\n- runs locally with `node server/index.js`\n- ships to Cloudflare Pages in one push\n- ships with an admin panel: write posts, upload images, hide/show posts\n\n## Architecture choices\n\n- **Express** for local API endpoints\n- **JSON files** as the data layer (`data/posts.json` and friends)\n- **Cloudflare Functions** at `functions/api/*.js` mirror the same APIs in prod\n- **localStorage + JWT** for admin auth — no cookies needed\n- **bilingual fields** inline on each record: `{ zh, en }`\n\n```js\n// Example post shape\n{\n  id: 'abcd1234',\n  status: 'published',\n  title:    { zh: '你好', en: 'Hello' },\n  summary:  { zh: '...',   en: '...' },\n  body:     { zh: '...',   en: '...' },\n  date: '2026-04-02'\n}\n```\n\n## Tiny helpers I like\n\n- **`renderMarkdown`** — small client-side Markdown renderer (good enough)\n- **`localStorage` + JWT** — auth state survives reload without server-side sessions\n- **`multer`** — image uploads write to disk locally; swap for R2 in Cloudflare\n\nFull source is in the repo — star if it helps.\n"
+      },
+      "id": "d106909cb142",
+      "createdAt": "2026-08-13T17:10:14.738Z",
+      "updatedAt": "2026-08-17T09:15:16.002Z",
+      "author": "admin"
+    },
+    {
+      "slug": "notes-on-deep-work",
+      "category": "Growth Mindset",
+      "tags": [
+        "focus",
+        "work"
+      ],
+      "status": "hidden",
+      "date": "2026-03-15",
+      "cover": "/images/cover-focus.svg",
+      "title": {
+        "zh": "深度工作的三条朴素原则",
+        "en": "Three Quiet Rules of Deep Work"
+      },
+      "summary": {
+        "zh": "不是 4 点起床、不是双显示器、不是所有番茄钟。真正能用的是这三件小事。",
+        "en": "Not 4am wake-ups, not dual monitors, not every flavor of Pomodoro. Three small rules that actually work."
+      },
+      "body": {
+        "zh": "## 不要追逐\"最有效率的自己\"\n\n网上能搜到一堆\"提高效率\"的清单，每一条都很短，每一条都让人兴奋，但几乎没人能长期坚持。\n\n我决定反其道而行之——只留三条。\n\n## 规则一：做事前先写下\"完成是什么样子\"\n\n打开任何工作之前，先用一句话写下\"结束长什么样\"。\n\n> 今天交付一份能跑通的脚本，包含 README，最多 200 行。\n\n这一句话做了两件事：界定范围，提供完成信号。\n\n## 规则二：把深度时段留在精力最好的时段\n\n对大多数人来说上午比下午更靠谱，下午比晚上更靠谱。我自己的经验：**最重要的那件事，永远放在当天的第一块时间**，后面再处理邮件、消息、琐事。\n\n## 规则三：允许自己\"看起来没用\"\n\n深度工作最反直觉的是——它看起来 **一点都不像在工作**。一个人坐在桌前两小时写三百个字，他人看到的只是\"发呆\"。\n\n不用解释，不用表现得忙。做完就行。\n",
+        "en": "## Stop chasing your \"most productive self\"\n\nThe internet is full of productivity checklists. Each item is short, each one feels exciting, almost none of them stick.\n\nI went the other way and kept just three rules.\n\n## Rule 1: Write down \"what does done look like\"\n\nBefore opening any work, write one sentence:\n\n> Today I will ship a runnable script with a README, ≤ 200 lines.\n\nThat sentence does two things: bounds the scope, and gives you a finish line.\n\n## Rule 2: Put deep work in your peak window\n\nFor most people, mornings beat afternoons, afternoons beat evenings. In my experience, **the most important task of the day always goes in the first block** — emails and chat come afterwards.\n\n## Rule 3: Allow yourself to \"look unproductive\"\n\nDeep work is counterintuitive — it barely looks like work. Someone sitting for two hours writing 300 words looks, to outside eyes, like they're zoning out.\n\nDon't perform. Don't explain. Just ship.\n"
+      },
+      "id": "28c723154ae3",
+      "createdAt": "2026-08-14T17:10:14.738Z",
+      "updatedAt": "2026-08-17T09:15:19.982Z",
+      "author": "admin"
+    },
+    {
+      "slug": "first-steps-into-llms",
+      "category": "Technology",
+      "tags": [
+        "ai",
+        "notes"
+      ],
+      "status": "hidden",
+      "date": "2026-02-08",
+      "cover": "/images/cover-llm.svg",
+      "title": {
+        "zh": "给写代码的人：第一次玩转 LLM 的几条笔记",
+        "en": "For Engineers: First Notes on Playing with LLMs"
+      },
+      "summary": {
+        "zh": "从工程师视角出发，写给\"会用 API、写过 prompt、想过把它接进自己的项目\"的人。",
+        "en": "From an engineer's perspective — written for people who can hit an API, have written prompts, and wondered how to plug this into their own project."
+      },
+      "body": {
+        "zh": "## 别把 LLM 当搜索引擎用\n\nLLM 不是搜索引擎。它不知道**事件真伪**，但能极好地 **整理思路、转换格式、起承转合**。\n\n把它当\"结对编程的同事\"用，比当\"老师\"用靠谱得多。\n\n## Prompt 不是越长越好\n\n我最初以为 prompt 越长越有用，于是写了一两百字的指令。结果发现：\n\n- **清晰** > 详细\n- **示例** > 规则\n- **结构化输入** > 自然语言\n\n给三个例子，比给三个规则更稳。\n\n## 把它嵌入自己的应用\n\n最简单的形态：\n\n```js\nconst user = \"请帮我把这段会议纪要整理成待办列表\";\nconst out  = await llm.complete({ prompt: TEMPLATE + user });\n```\n\n注意三点：\n1. **结果要校验**：永远把 LLM 的输出当作\"提案\"而不是\"答案\"。\n2. **失败也要兜底**：写好 try/catch 和超时。\n3. **评估必须有**：哪怕只有 10 条人工打标数据，也能让你\"知道改善有没有用\"。\n\n工具终归是工具，**用得稳的人，才是赢家**。\n",
+        "en": "## Don't use an LLM as a search engine\n\nAn LLM is not a search engine. It can't really tell you **what is true**, but it's extremely good at **structuring thoughts, transforming formats, smoothing prose**.\n\nUse it like a pair-programming colleague rather than a textbook.\n\n## Longer prompts ≠ better prompts\n\nI used to believe longer prompts were stronger. I'd write 150+ word instructions. Then I learned:\n\n- **clarity** beats verbosity\n- **examples** beat rules\n- **structured input** beats free-form text\n\nThree good examples crush three good rules.\n\n## Embedding it in your own app\n\nThe simplest shape:\n\n```js\nconst user = \"Turn these meeting notes into a TODO list\";\nconst out  = await llm.complete({ prompt: TEMPLATE + user });\n```\n\nThree things to remember:\n\n1. **Validate the output**: always treat the LLM's reply as a *proposal*, never as *truth*.\n2. **Plan for failure**: wrap in try/catch, set timeouts.\n3. **Always evaluate**: even 10 hand-labeled examples tell you whether a change actually helped.\n\nThe tool is just a tool. **The operator wins.**\n"
+      },
+      "id": "2ef83cbc6598",
+      "createdAt": "2026-08-15T17:10:14.738Z",
+      "updatedAt": "2026-08-17T09:15:20.945Z",
+      "author": "admin"
+    }
+  ]
+}

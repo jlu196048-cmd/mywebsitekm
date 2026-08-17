@@ -1,0 +1,18 @@
+# Cloudflare Pages redirects
+#
+# API requests are handled by Cloudflare Functions automatically because
+# the files live under /functions. No rewrites needed for them.
+#
+# We deliberately do NOT rewrite /admin/ — Cloudflare Pages will serve
+# /admin/index.html directly, which is the login page. The dashboard has
+# its own explicit rewrite below so deep-links work.
+
+# Pretty URLs
+/about   /about.html   200
+/blog    /blog.html    200
+/contact /contact.html 200
+
+# Admin: explicit dashboard deep-link. /admin/ and /admin/index.html
+# resolve via the static file lookup (login page).
+/admin/dashboard      /admin/dashboard.html 200
+/admin/dashboard.html /admin/dashboard.html 200

@@ -1,0 +1,18 @@
+{
+  "name": "我的小角落",
+  "avatar": "",
+  "intro": {
+    "zh": "这是一个记录学习与思考的个人小站。文章涵盖成长、技术与生活。\n\n欢迎你留下脚印，或在「联系」页面给我留言。",
+    "en": "This is my little corner of the internet — a place to share what I learn, build, and think about. No grand insights, just notes along the way.\n\nFeel free to say hello via the Contact page."
+  },
+  "about": {
+    "zh": "## 关于我\n\n我是一名**终身学习者**，喜欢把散碎整理成文章。\n\n- 📚 我在学习：写作、思维模型、编程\n- ✍️ 我在写：读书笔记、学习总结、生活随笔\n- 🌱 我相信：日拱一卒，功不唐捐\n\n如果你也喜欢这样的内容，欢迎常来逛逛。",
+    "en": "## About me\n\nI am a **lifelong learner** who likes turning scattered notes into shareable articles.\n\n- 📚 Learning: writing, mental models, programming\n- ✍️ Writing: book notes, project postmortems, life fragments\n- 🌱 Belief: small consistent steps compound\n\nStick around if any of that sounds interesting."
+  },
+  "contacts": [
+    {
+      "label": "Email",
+      "url": "mailto:592106338@QQ.COM"
+    }
+  ]
+}

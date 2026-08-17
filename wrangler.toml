@@ -1,0 +1,48 @@
+# Cloudflare Pages configuration
+# ---------------------------------------------------------------
+# After you create the KV namespace and R2 bucket in the Cloudflare
+# dashboard, fill in the IDs / names below and uncomment the
+# [[kv_namespaces]] / [[r2_buckets]] / [vars] blocks. Then deploy with:
+#
+#     npx wrangler pages deploy public --project-name=mywebsite
+#
+# Required Cloudflare resources:
+#   1. Pages project:         mywebsite
+#   2. KV namespace:         bound as MYWEBSITE_KV
+#   3. R2 bucket:            bound as MYWEBSITE_R2
+#   4. Environment variable: JWT_SECRET (any long random string)
+#   5. (recommended) Cloudflare Turnstile widget for the contact form
+# ---------------------------------------------------------------
+
+name = "Mywebsitekm"
+compatibility_date = "2026-01-01"
+# Static assets (HTML/CSS/JS) live in public/. Cloudflare Pages reads
+# `functions/` from the REPO ROOT — it does not need to live inside
+# public/.
+pages_build_output_dir = "public"
+
+# --- KV namespace ---
+# Created via: dash.cloudflare.com → 存储和数据库 → KV → 创建命名空间
+[[kv_namespaces]]
+binding = "MYWEBSITE_KV"
+id = "53a2a823f41a48ce9b8d4ea179c9088e"
+
+# --- R2 bucket ---
+# Create via: dash.cloudflare.com → 存储和数据库 → R2 → 创建存储桶
+# Name it "mywebsite-images", then uncomment below.
+# [[r2_buckets]]
+# binding = "MYWEBSITE_R2"
+# bucket_name = "mywebsite-images"
+
+# --- Environment variables ---
+# Set JWT_SECRET (required) and TURNSTILE_SECRET (recommended) in:
+#   Cloudflare dashboard → Pages → mywebsite → Settings → Environment variables
+# Or uncomment below for local-only builds.
+#
+# Generate JWT_SECRET with:  openssl rand -hex 48
+# Generate TURNSTILE keys at: dash.cloudflare.com → Turnstile → Add widget
+#
+# [vars]
+# JWT_SECRET = "REPLACE_WITH_LONG_RANDOM_STRING"
+# TURNSTILE_SECRET_KEY = "REPLACE_FROM_TURNSTILE_DASHBOARD"
+# TURNSTILE_SITE_KEY   = "REPLACE_FROM_TURNSTILE_DASHBOARD"

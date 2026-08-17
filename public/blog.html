@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <header class="page-header"><h1 data-i18n="blog.title">博客</h1></header>
+    <div id="posts-list"></div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/layout.js"></script>
+  <script>
+    function getQuery(name) {
+      const m = location.search.match(new RegExp('[?&]' + name + '=([^&]*)'));
+      return m ? decodeURIComponent(m[1]) : '';
+    }
+    window.initLayout('blog').then(function() {
+      const lang = window.getLang();
+      const page = Math.max(1, parseInt(getQuery('page') || '1', 10));
+      window.API.getPosts({ page: page, status: 'published', sort: 'desc' }).then(function(data) {
+        const wrap = document.getElementById('posts-list');
+        if (!data.items || data.items.length === 0) {
+          wrap.innerHTML = '<p class="form-msg">' + window.escapeHTML(window.I18N['blog.empty'][lang]) + '</p>';
+          return;
+        }
+        wrap.innerHTML = data.items.map(function(post) {
+          const t = post.title || {};
+          const sum = post.summary || {};
+          const imgTag = post.cover ? '<img class="post-thumb" src="' + post.cover + '" alt="">' : '';
+          return `
+            <article class="post-entry">
+              ${imgTag}
+              <h3><a href="/post.html?id=${post.id}">${window.escapeHTML(t[lang] || t.zh || t.en || '')}</a></h3>
+              <div class="post-meta">
+                <span>${window.formatDate(post.date)}</span>
+                ${post.category ? '<span class="category">' + window.escapeHTML(post.category) + '</span>' : ''}
+                ${post.tags && post.tags.length ? '<span class="tags-list">' + post.tags.map(function(t2){return '<span class="tag">' + window.escapeHTML(t2) + '</span>';}).join('') + '</span>' : ''}
+              </div>
+              <div class="post-summary">${window.escapeHTML(sum[lang] || sum.zh || sum.en || '')}</div>
+              <a class="read-more" href="/post.html?id=${post.id}" data-i18n="home.readMore">继续阅读 →</a>
+            </article>`;
+        }).join('');
+        // pagination
+        const totalPages = data.totalPages || 1;
+        const cur = data.page || 1;
+        let pgHtml = '';
+        if (cur > 1) pgHtml += '<a href="?page=' + (cur - 1) + '" data-i18n="blog.pagePrev">← 上一页</a>'; else pgHtml += '<span></span>';
+        pgHtml += '<span>' + cur + ' / ' + totalPages + '</span>';
+        if (cur < totalPages) pgHtml += '<a href="?page=' + (cur + 1) + '" data-i18n="blog.pageNext">下一页 →</a>';
+        document.getElementById('pagination').innerHTML = pgHtml;
+        window.applyI18n(lang);
+      });
+    });
+  </script>
+</body>
+</html>

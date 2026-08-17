@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a5a9f"/>
+      <stop offset="1" stop-color="#2c3e50"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" fill="url(#g)"/>
+  <circle cx="640" cy="80" r="120" fill="#ffffff" opacity=".08"/>
+  <circle cx="120" cy="360" r="160" fill="#ffffff" opacity=".06"/>
+  <text x="50%" y="58%" text-anchor="middle" font-family="Georgia, serif" font-size="120" font-weight="700" fill="#ffffff" opacity=".85" letter-spacing="6">LLM</text>
+</svg>

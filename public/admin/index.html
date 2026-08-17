@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <div class="login-card">
+      <h1>Admin Login</h1>
+      <p class="sub">Sign in to manage your website</p>
+      <form id="login-form">
+        <input type="text" name="username" placeholder="Username" required autocomplete="username">
+        <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+        <button type="submit" class="btn-primary">Sign in</button>
+      </form>
+      <p id="login-status" class="form-msg" style="margin-top:10px"></p>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const status = document.getElementById('login-status');
+      status.className = 'form-msg';
+      status.textContent = '';
+      try {
+        const data = await window.API.adminLogin({
+          username: fd.get('username'),
+          password: fd.get('password'),
+        });
+        if (data.token) localStorage.setItem('admin_token', data.token);
+        location.href = '/admin/dashboard.html';
+      } catch (err) {
+        status.className = 'form-msg err';
+        status.textContent = err.message || 'Login failed';
+      }
+    });
+
+    // If already logged in, jump straight to dashboard
+    if (localStorage.getItem('admin_token')) {
+      window.API.adminStatus().then(function(s) {
+        if (s && s.authenticated) location.replace('/admin/dashboard.html');
+      }).catch(function() {});
+    }
+  </script>
+</body>
+</html>
