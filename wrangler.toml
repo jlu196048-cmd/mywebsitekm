@@ -14,7 +14,7 @@
 #   5. (recommended) Cloudflare Turnstile widget for the contact form
 # ---------------------------------------------------------------
 
-name = "Mywebsitekm"
+name = "mywebsitekm"
 compatibility_date = "2026-01-01"
 # Static assets (HTML/CSS/JS) live in public/. Cloudflare Pages reads
 # `functions/` from the REPO ROOT — it does not need to live inside
