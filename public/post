@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Post</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <article class="post-single" id="post-article">
+      <p class="form-msg">Loading…</p>
+    </article>
+    <a class="back-link" href="/" data-i18n="home.back">← 返回首页</a>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/layout.js"></script>
+  <script>
+    function getQuery(name) {
+      const m = location.search.match(new RegExp('[?&]' + name + '=([^&]*)'));
+      return m ? decodeURIComponent(m[1]) : '';
+    }
+    window.initLayout('blog').then(function() {
+      const lang = window.getLang();
+      const id = getQuery('id');
+      if (!id) { document.getElementById('post-article').innerHTML = '<p>Missing post id.</p>'; return; }
+      window.API.getPost(id).then(function(post) {
+        const t = post.title || {};
+        const body = post.body || {};
+        const meta = `
+          <div class="post-meta">
+            <span>${window.formatDate(post.date)}</span>
+            ${post.category ? '<span class="category">' + window.escapeHTML(post.category) + '</span>' : ''}
+            ${post.status === 'hidden' ? '<span class="tag" style="background:#fde2e1;color:#a94442">' + window.escapeHTML(window.I18N['hidden.label'][lang]) + '</span>' : ''}
+            ${post.status === 'draft' ? '<span class="tag">' + window.escapeHTML(window.I18N['draft.label'][lang]) + '</span>' : ''}
+          </div>`;
+        const cover = post.cover ? '<img src="' + post.cover + '" alt="">' : '';
+        const html = `
+          <h1>${window.escapeHTML(t[lang] || t.zh || t.en || '')}</h1>
+          ${meta}
+          <div class="post-content">
+            ${cover}
+            ${window.renderMarkdown(body[lang] || body.zh || body.en || '')}
+          </div>`;
+        document.getElementById('post-article').innerHTML = html;
+        document.title = (t[lang] || t.zh || t.en || 'Post') + ' · My Website';
+      }).catch(function(err) {
+        document.getElementById('post-article').innerHTML = '<p class="form-msg err">' + window.escapeHTML(err.message) + '</p>';
+      });
+    });
+  </script>
+</body>
+</html>

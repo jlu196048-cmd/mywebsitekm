@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <header class="page-header"><h1 data-i18n="about.title">关于我</h1></header>
+    <article class="about-content" id="about-content">
+      <p class="form-msg">Loading…</p>
+    </article>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/layout.js"></script>
+  <script>
+    window.initLayout('about').then(function() {
+      const lang = window.getLang();
+      window.API.getProfile().then(function(profile) {
+        document.title = (profile.name || '') + ' · About';
+        const aboutMd = (profile.about && profile.about[lang]) || '';
+        const html = window.renderMarkdown(aboutMd) ||
+          '<p>' + window.escapeHTML(window.I18N['about.title'][lang]) + '</p>';
+        let contactHtml = '';
+        const contacts = profile.contacts || [];
+        if (contacts.length) {
+          contactHtml = '<h2 data-i18n="about.contact">' + window.I18N['about.contact'][lang] + '</h2><ul class="contact-list">';
+          contacts.forEach(function(c) {
+            contactHtml += '<li><strong>' + window.escapeHTML(c.label) + ':</strong> <a href="' + window.escapeHTML(c.url) + '" target="_blank" rel="noopener">' + window.escapeHTML(c.url) + '</a></li>';
+          });
+          contactHtml += '</ul>';
+        }
+        document.getElementById('about-content').innerHTML = html + contactHtml;
+        window.applyI18n(lang);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- Cloudflare Turnstile widget. The site key is rendered into a meta tag
+       by layout.js (if the server provides one) and the script below is
+       appended dynamically only when a key is present. This keeps the page
+       usable even if Turnstile hasn't been configured yet. -->
+  <meta name="cf-turnstile-sitekey" content="">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <header class="page-header"><h1 data-i18n="contact.title">联系</h1></header>
+    <form class="contact-form" id="contact-form">
+      <div class="form-row">
+        <label data-i18n="contact.name">您的称呼</label>
+        <input type="text" name="name" required maxlength="80">
+      </div>
+      <div class="form-row">
+        <label data-i18n="contact.email">邮箱地址</label>
+        <input type="email" name="email" required maxlength="120">
+      </div>
+      <div class="form-row">
+        <label data-i18n="contact.msg">留言内容</label>
+        <textarea name="message" required maxlength="2000"></textarea>
+      </div>
+      <!-- Turnstile mounts here when a site key is configured. -->
+      <div class="form-row" id="turnstile-mount" hidden></div>
+      <button type="submit" class="btn-primary" data-i18n="contact.send">发送</button>
+      <p id="contact-status" class="form-msg"></p>
+    </form>
+
+    <article class="about-content" id="contact-info" style="margin-top:24px"></article>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/layout.js"></script>
+  <script>
+    window.initLayout('contact').then(function() {
+      const lang = window.getLang();
+      window.API.getProfile().then(function(profile) {
+        const contacts = profile.contacts || [];
+        if (contacts.length) {
+          let html = '<h2 data-i18n="about.contact">' + window.I18N['about.contact'][lang] + '</h2><ul class="contact-list">';
+          contacts.forEach(function(c) {
+            html += '<li><strong>' + window.escapeHTML(c.label) + ':</strong> <a href="' + window.escapeHTML(c.url) + '" target="_blank" rel="noopener">' + window.escapeHTML(c.url) + '</a></li>';
+          });
+          html += '</ul>';
+          document.getElementById('contact-info').innerHTML = html;
+        } else {
+          document.getElementById('contact-info').innerHTML = '';
+        }
+        window.applyI18n(lang);
+      });
+
+      // Mount Turnstile if a site key is configured on the server.
+      // The server emits it into <meta name="cf-turnstile-sitekey"> via layout.js.
+      (function mountTurnstile() {
+        const meta = document.querySelector('meta[name="cf-turnstile-sitekey"]');
+        const key = meta && meta.getAttribute('content');
+        if (!key) return;
+        const mount = document.getElementById('turnstile-mount');
+        mount.hidden = false;
+        const s = document.createElement('script');
+        s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+        s.async = true;
+        s.defer = true;
+        s.onload = () => {
+          if (window.turnstile) {
+            window.turnstile.render(mount, {
+              sitekey: key,
+              callback: function (token) {
+                window.__cfTurnstileToken = token;
+              },
+              'expired-callback': function () {
+                window.__cfTurnstileToken = '';
+              },
+              'error-callback': function () {
+                window.__cfTurnstileToken = '';
+              },
+            });
+          }
+        };
+        document.head.appendChild(s);
+      })();
+
+      document.getElementById('contact-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const status = document.getElementById('contact-status');
+        status.className = 'form-msg';
+        status.textContent = '';
+        const fd = new FormData(form);
+        const body = {
+          name: fd.get('name'),
+          email: fd.get('email'),
+          message: fd.get('message'),
+        };
+        if (window.__cfTurnstileToken) body['cf-turnstile-response'] = window.__cfTurnstileToken;
+        window.API.submitContact(body).then(function() {
+          status.className = 'form-msg ok';
+          status.textContent = window.I18N['contact.success'][lang];
+          form.reset();
+          if (window.turnstile) try { window.turnstile.reset(); } catch(e){}
+          window.__cfTurnstileToken = '';
+        }).catch(function(err) {
+          status.className = 'form-msg err';
+          status.textContent = (err && err.message) || window.I18N['contact.fail'][lang];
+        });
+      });
+    });
+  </script>
+</body>
+</html>

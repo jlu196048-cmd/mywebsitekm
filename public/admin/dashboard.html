@@ -300,7 +300,7 @@
               ? '<span class="tag-pill" style="background:#fde2e1;color:#a94442">Hidden</span>'
               : '<span class="tag-pill">Draft</span>';
           tr.innerHTML = `
-            <td><a href="/post.html?id=${p.id}" target="_blank">${window.escapeHTML(title)}</a></td>
+            <td><a href="/post?id=${p.id}" target="_blank">${window.escapeHTML(title)}</a></td>
             <td>${window.formatDate(p.date)}</td>
             <td>${window.escapeHTML(p.category || '')}</td>
             <td>${statusBadge}</td>

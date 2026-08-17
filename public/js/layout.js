@@ -11,9 +11,9 @@
           <a href="/" class="brand" data-profile-name>${window.escapeHTML(profile.name || 'My Website')}</a>
           <nav>
             <a href="/" data-nav="home">${window.I18N['nav.home'][lang]}</a>
-            <a href="/about.html" data-nav="about">${window.I18N['nav.about'][lang]}</a>
-            <a href="/blog.html" data-nav="blog">${window.I18N['nav.blog'][lang]}</a>
-            <a href="/contact.html" data-nav="contact">${window.I18N['nav.contact'][lang]}</a>
+            <a href="/about" data-nav="about">${window.I18N['nav.about'][lang]}</a>
+            <a href="/blog" data-nav="blog">${window.I18N['nav.blog'][lang]}</a>
+            <a href="/contact" data-nav="contact">${window.I18N['nav.contact'][lang]}</a>
           </nav>
           <div class="toolbar">
             <div class="lang-switcher">
